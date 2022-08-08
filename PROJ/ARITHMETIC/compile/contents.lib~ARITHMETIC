@@ -1,0 +1,7 @@
+5
+~M 0 "" 0 $root
+~A 1 "" 0 $root
+~M 1 "../src/driver.v" 45 MUX4X1
+~A 1 "../src/driver.v" 45 MUX4X1
+~M 3 "../src/driver.v" 72 TSTMUX4
+~A 1 "../src/driver.v" 72 TSTMUX4

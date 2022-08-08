@@ -1,0 +1,7 @@
+[CACHESIMPLE|Aldec.SymbolsCommands.7]
+Built-in symbols=0
+ARITHMETIC=0
+[COMPILESTATUS|.\src\driver.v]
+FileTimeLow=1612417807
+FileTimeHigh=30976873
+Status=Compiled

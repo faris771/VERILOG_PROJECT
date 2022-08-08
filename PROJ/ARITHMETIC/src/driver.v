@@ -57,42 +57,16 @@ module MUX4X1(f,s, b);
     not #3ns (ns0, s[0]);
 
     and #7ns AND0(w[0] , b[0], ns1 ,ns0), AND1(w[1] , b[1], s[0] ,ns1), AND2(w[2] , b[2], s[1] ,ns0), AND3(w[3] , b[3],s[1], s[0]); 
-
+    
     or #7ns out (f, w[0], w[1], w[2], w[3]);
 
 
 
 
 
-endmodule
-
-// module TSTMUX4;
-
-//     reg [0:3] b;
-//     reg [1: 0] s;
-//     wire f;
-//     MUX4X1 (.b(b), .s(s), .f(f)) ;
-
-//     initial begin
- 
-//         {s,b} = 6'b000000;
-
-//         repeat(127) begin
-            
-//             #10ns;
-//             {s,b} = {s,b} + 6'b000001;
-
- 
-        
-//         end
+endmodule	 
 
 
-
-//     end
-
-
-
-// endmodule
 
 
 module TSTMUX4;
@@ -105,7 +79,7 @@ module TSTMUX4;
 
     initial begin
  
-        #10 s = 2'b00 ;b = 4'b0101;
+         s = 2'b00 ;b = 4'b0101;
         #10 s = 2'b01 ;b = 4'b0101;
         #10 s = 2'b10 ;b = 4'b0101;
         #10 s = 2'b11 ;b = 4'b0101;
@@ -121,3 +95,4 @@ module TSTMUX4;
 
 
 endmodule
+
