@@ -48,6 +48,7 @@ XOR
 
 module MUX4X1(f,s, b);
 
+    // TIME NEEDED 3 + 7 +7 >= 17 
     input  [0:3] b;
     input [1: 0] s;
     output  f;
@@ -160,32 +161,32 @@ endmodule
 
 
 
-// module FA_TEST;
+module FA_TEST;
 
-//     reg Tcin,Ta,Tb;
-//     wire Tsum,Tcout;
+    reg Tcin,Ta,Tb;
+    wire Tsum,Tcout;
 
-//     FULLADDER DUMMY(.sum(Tsum), .cout(Tcout), .a(Ta), .b(Tb), .cin(Tcin));
+    FULLADDER DUMMY(.sum(Tsum), .cout(Tcout), .a(Ta), .b(Tb), .cin(Tcin));
 
-//     initial begin
-        
-//         $display("FULL ADDER TST BENCHMARK");
+    initial  begin
+        $display("FULL ADDER TST BENCHMARK");
         // total time must be > 22 ns
-//         {Tcin,Ta,Tb} = 3'b000;
-
-//         $monitor("Time %0d input = %b %b %b SUM= %b CARRY = %b\n",$time,Ta,Tb,Tcin,Tsum,Tcout);
-
-//         repeat(7) begin
-//             #25 {Tcin,Ta,Tb} = {Tcin,Ta,Tb} +  3'b001;
+        {Tcin,Ta,Tb} = 3'b000;
 
 
-//         end    
+        repeat(7) begin
+            #26 {Tcin,Ta,Tb} = {Tcin,Ta,Tb} +  3'b001;
+        end  
+          
+        
+    end
+    always #25 $display("Time %0d input = %b %b %b SUM= %b CARRY = %b\n",$time,Ta,Tb,Tcin,Tsum,Tcout); // 1 sec diff between  changing of Ta and Tb and Tcin and printing the value 
+    always #500 $finish;
 
-//     end
 
 
 
-// endmodule
+endmodule
 
 
 //===================== 4 bit  ADDER ============================
@@ -207,37 +208,37 @@ module IV_BIT_ADDER(sum,cout,a,b,cin);
 endmodule
 
 
-module TST_IV_BIT_ADDER;
+// module TST_IV_BIT_ADDER;
 
-    reg cin;
-    reg [3:0] a,b;
-    wire [3:0] sum;
-    wire cout;
+//     reg cin;
+//     reg [3:0] a,b;
+//     wire [3:0] sum;
+//     wire cout;
 
-    IV_BIT_ADDER DUMMY(.sum(sum), .cout(cout), .a(a), .b(b), .cin(cin));
+//     IV_BIT_ADDER DUMMY(.sum(sum), .cout(cout), .a(a), .b(b), .cin(cin));
 
-    initial begin
+//     initial begin
         
-        $display("4 BIT ADDER TST BENCHMARK2");
+//         $display("4 BIT ADDER TST BENCHMARK2");
 
-        a = 4'b0000;
-        b = 4'b0000;
-        cin = 1'b0;
-        $monitor("Time %0d | input = %d %d %d SUM= %d CARRY = %d\n",$time,a,b,cin,sum,cout);
+//         a = 4'b0000;
+//         b = 4'b0000;
+//         cin = 1'b0;
+//         $monitor("Time %0d | input = %d %d %d SUM= %d CARRY = %d\n",$time,a,b,cin,sum,cout);
 
-        #40 a = 15;
-        #40 a = 3;
-        #40 b = 3;
-        #40 cin = 1;
+//         #40 a = 15;
+//         #40 a = 3;
+//         #40 b = 3;
+//         #40 cin = 1;
 
 
 
-    end
+//     end
    
 
 
 
-endmodule
+// endmodule
 
 //===================== SYSTEM============================
 
@@ -250,17 +251,17 @@ module SYSTEM(d,cout,a,b,s,cin);
     // wire [2:0] c;
     wire [3:0] y;
     
-    logic [3:0] tmpB0,tmpB1,tmpB2,tmpB3;
-    tmpB0 = `{[0],~b[0],0,1}
-    tmpB1 =`{[1],~b[1],0,1}
-    tmpB2 =`{[2],~b[2],0,1}
-    tmpB3 =`{[3],~b[3],0,1}
+    // logic [3:0] tmpB0,tmpB1,tmpB2,tmpB3;
+    // tmpB0 = `{[0],~b[0],0,1}
+    // tmpB1 =`{[1],~b[1],0,1}
+    // tmpB2 =`{[2],~b[2],0,1}
+    // tmpB3 =`{[3],~b[3],0,1}
 
 
-    MUX4X1 mux0(.b({tmpB0}), .s(s), .f(y[0]));    
-    MUX4X1 mux1(.b({tmpB1}), .s(s), .f(y[1]));    
-    MUX4X1 mux2(.b({tmpB2}), .s(s), .f(y[2]));    
-    MUX4X1 mux3(.b({tmpB3}), .s(s), .f(y[3]));    
+    MUX4X1 mux0(.b({b[0],~b[0],1'b0,1'b1}), .s(s), .f(y[0]));    
+    MUX4X1 mux1(.b({b[1],~b[1],1'b0,1'b1}), .s(s), .f(y[1]));    
+    MUX4X1 mux2(.b({b[2],~b[2],1'b0,1'b1}), .s(s), .f(y[2]));    
+    MUX4X1 mux3(.b({b[3],~b[3],1'b0,1'b1}), .s(s), .f(y[3]));    
     
     IV_BIT_ADDER ADDER4(.sum(d), .cout(cout), .a(a), .b(y), .cin(cin));
 
