@@ -172,38 +172,39 @@ module IV_BIT_ADDER(sum,cout,a,b,cin);
 endmodule
 
 
-module TST_IV_BIT_ADDER;
+// module TST_IV_BIT_ADDER;
 
-    reg cin;
-    reg [3:0] a,b;
-    wire [3:0] sum;
-    wire cout;
+//     reg cin;
+//     reg [3:0] a,b;
+//     wire [3:0] sum;
+//     wire cout;
 
-    IV_BIT_ADDER DUMMY(.sum(sum), .cout(cout), .a(a), .b(b), .cin(cin));
+//     IV_BIT_ADDER DUMMY(.sum(sum), .cout(cout), .a(a), .b(b), .cin(cin));
 
-    initial begin
+//     initial begin
         
-        $display("4 BIT ADDER TST BENCHMARK2");
+//         $display("4 BIT ADDER TST BENCHMARK2");
 
-        a = 4'b0000;
-        b = 4'b0000;
-        cin = 1'b0;
+//         a = 4'b0000;
+//         b = 4'b0000;
+//         cin = 1'b0;
 
-        #45 a = 4'b1111; // why 45 ? because  full adder needs 25 ns and each full adder needs carry which needs 14ns  = 44ns 1ns (but it'd concurrent so 14 + 25 ==44 + 1 for safety )        #45 a = 4'b1011;
-        #45 b = 4'b1001;
-        #45 cin = 1'b1;
+//         #45 a = 4'b1111; // why 45 ? because  full adder needs 25 ns and each full adder needs carry which needs 14ns  = 44ns 1ns (but it'd concurrent so 14 + 25 ==44 + 1 for safety )        #45 a = 4'b1011;
+//         #45 b = 4'b1001;
+//         #45 cin = 1'b1;
 
-    end
-    always #44 $display("Time %0d input = %b %b %b SUM= %b CARRY = %b\n",$time,a,b,cin,sum,cout); // 1 sec diff between  changing of Ta and Tb and Tcin and printing the value
-    always #185 $finish;
+//     end
+//     always #44 $display("Time %0d input = %b %b %b SUM= %b CARRY = %b\n",$time,a,b,cin,sum,cout); // 1 sec diff between  changing of Ta and Tb and Tcin and printing the value
+//     always #185 $finish;
 
 
 
-endmodule
+// endmodule
 
 //===================== SYSTEM============================
 
 module SYSTEM(d,cout,a,b,s,cin);
+
     input cin;
     input [3:0] a,b;
     input [1:0] s;
@@ -223,3 +224,38 @@ module SYSTEM(d,cout,a,b,s,cin);
 
 endmodule
 
+module TST_SYSTEM;
+    
+    reg cin;
+    reg [3:0] a,b;
+    reg [1:0] s;
+    wire [3:0] d;
+    wire cout;
+
+    SYSTEM DUMMY(.d(d), .cout(cout), .a(a), .b(b), .s(s), .cin(cin));
+
+
+    initial begin
+        // mux = 20 ns , 4bit adder : 45 =  65 + 5 for safety
+
+        $display("SYSTEM TST BENCHMARK");
+        {s,cin} = 3'b000;
+        a = 4'b0000;
+        b = 4'b1111;
+        $display("a : %b | b : %b ",a,b);
+        repeat(8) begin
+            
+            #70 {s,cin} = {s,cin} +  3'b001;
+
+
+        end
+        
+
+    end
+    always #69 $display("Time %0d select = %b%b OUT= %b CARRY = %b\n",$time,s,cin,d,cout); // 1 sec diff between  changing of Ta and Tb and Tcin and printing the value   
+    always #565 $finish; // 70 * 8 + 5 for safety
+
+
+
+
+endmodule
