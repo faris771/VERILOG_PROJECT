@@ -74,65 +74,29 @@ endmodule
 //     reg [0:3] b;
 //     reg [1: 0] s;
 //     wire f;
-//     MUX4X1 DUMMY(.b(b), .s(s), .f(f)) ;
-
-//     initial begin
- 
-//         {s,b} = 6'b000000;
-        
-//         $monitor("Time %0d select= %b input = %b OUT= %b\n",$time,s,b,f);
-        
-//         repeat(127) begin
-            
-//             #20 {s,b} = {s,b} + 6'b000001;
-
- 
-        
-//         end
-
-
-
-//     end
-
-
-
-// endmodule
-
-
-// module TSTMUX4;
-
-//     reg [0:3] b;
-//     reg [1: 0] s;
-//     wire f;
 //     MUX4X1 tst (.b(b), .s(s), .f(f)) ; // order doesn't matter
     
 
 //     initial begin
-        
-        // $monitor("Time %0d select= %b input = %b OUT= %b\n",$time,s,b,f);
 
-//         $display("Time %0d select= %b input = %b OUT= %b\n",$time,s,b,f);
- 
-//         #20 s = 2'b00 ;b = 4'b0101;
-//         $display("Time %0d select= %b input = %b OUT= %b\n",$time,s,b,f);
-//         #20 s = 2'b01 ;b = 4'b0101;
+//         $display(" MUX TEST BENCH");
 
-//         $display("Time %0d select= %b input = %b OUT= %b\n",$time,s,b,f);
-//         #20 s = 2'b10 ;b = 4'b0101;
-//         $display("Time %0d select= %b input = %b OUT= %b\n",$time,s,b,f);
+//         // $monitor("Time %0d select= %b input = %b OUT= %b\n",$time,s,b,f);
+//         {s} = 2'b00;
+//         b = 4'b1010;
 
+//         repeat(4) begin
 
-//         #20 s = 2'b11 ;b = 4'b0101;
-//         $display("Time %0d select= %b input = %b OUT= %b\n",$time,s,b,f);
+//             #21 {s} = {s} + 2'b01; // 1 ns diff between each iteration priting the value  
 
-
-//         $finish();
-
-
-
-
+//         end
+      
 
 //     end
+
+//     always #20 $display("Time %0d select= %b input = %b OUT= %b\n",$time,s,b,f); // 20 > 17(mux toal delation )
+//     always #85 $finish; // 4 cases each case 20 ns  = 80 ns, 85 ns > 80 ns
+
 
 
 
@@ -161,32 +125,32 @@ endmodule
 
 
 
-module FA_TEST;
+// module FA_TEST;
 
-    reg Tcin,Ta,Tb;
-    wire Tsum,Tcout;
+//     reg Tcin,Ta,Tb;
+//     wire Tsum,Tcout;
 
-    FULLADDER DUMMY(.sum(Tsum), .cout(Tcout), .a(Ta), .b(Tb), .cin(Tcin));
+//     FULLADDER DUMMY(.sum(Tsum), .cout(Tcout), .a(Ta), .b(Tb), .cin(Tcin));
 
-    initial  begin
-        $display("FULL ADDER TST BENCHMARK");
-        // total time must be > 22 ns
-        {Tcin,Ta,Tb} = 3'b000;
+//     initial  begin
+//         $display("FULL ADDER TST BENCHMARK");
+        // total time must be > 25 ns
+//         {Tcin,Ta,Tb} = 3'b000;
 
 
-        repeat(7) begin
-            #26 {Tcin,Ta,Tb} = {Tcin,Ta,Tb} +  3'b001;
-        end  
+//         repeat(7) begin
+//             #26 {Tcin,Ta,Tb} = {Tcin,Ta,Tb} +  3'b001;
+//         end  
           
         
-    end
-    always #25 $display("Time %0d input = %b %b %b SUM= %b CARRY = %b\n",$time,Ta,Tb,Tcin,Tsum,Tcout); // 1 sec diff between  changing of Ta and Tb and Tcin and printing the value 
-    always #500 $finish;
+//     end
+//     always #25 $display("Time %0d input = %b %b %b SUM= %b CARRY = %b\n",$time,Ta,Tb,Tcin,Tsum,Tcout); // 1 sec diff between  changing of Ta and Tb and Tcin and printing the value 
+//     always #500 $finish;
 
 
 
 
-endmodule
+// endmodule
 
 
 //===================== 4 bit  ADDER ============================
@@ -199,46 +163,43 @@ module IV_BIT_ADDER(sum,cout,a,b,cin);
     output cout;
     wire [2:0] w;
 
-    FULLADDER FA1(.sum(sum[0]), .cout(w[0]), .a(a[0]), .b(b[0]), .cin(cin));
-    FULLADDER FA2(.sum(sum[1]), .cout(w[1]), .a(a[1]), .b(b[1]), .cin(w[0]));
-    FULLADDER FA3(.sum(sum[2]), .cout(w[2]), .a(a[2]), .b(b[2]), .cin(w[1]));
-    FULLADDER FA4(.sum(sum[3]), .cout(cout), .a(a[3]), .b(b[3]), .cin(w[2]));
+    FULLADDER FA0(.sum(sum[0]), .cout(w[0]), .a(a[0]), .b(b[0]), .cin(cin));
+    FULLADDER FA1(.sum(sum[1]), .cout(w[1]), .a(a[1]), .b(b[1]), .cin(w[0]));
+    FULLADDER FA2(.sum(sum[2]), .cout(w[2]), .a(a[2]), .b(b[2]), .cin(w[1]));
+    FULLADDER FA3(.sum(sum[3]), .cout(cout), .a(a[3]), .b(b[3]), .cin(w[2]));
     
 
 endmodule
 
 
-// module TST_IV_BIT_ADDER;
+module TST_IV_BIT_ADDER;
 
-//     reg cin;
-//     reg [3:0] a,b;
-//     wire [3:0] sum;
-//     wire cout;
+    reg cin;
+    reg [3:0] a,b;
+    wire [3:0] sum;
+    wire cout;
 
-//     IV_BIT_ADDER DUMMY(.sum(sum), .cout(cout), .a(a), .b(b), .cin(cin));
+    IV_BIT_ADDER DUMMY(.sum(sum), .cout(cout), .a(a), .b(b), .cin(cin));
 
-//     initial begin
+    initial begin
         
-//         $display("4 BIT ADDER TST BENCHMARK2");
+        $display("4 BIT ADDER TST BENCHMARK2");
 
-//         a = 4'b0000;
-//         b = 4'b0000;
-//         cin = 1'b0;
-//         $monitor("Time %0d | input = %d %d %d SUM= %d CARRY = %d\n",$time,a,b,cin,sum,cout);
+        a = 4'b0000;
+        b = 4'b0000;
+        cin = 1'b0;
 
-//         #40 a = 15;
-//         #40 a = 3;
-//         #40 b = 3;
-//         #40 cin = 1;
+        #45 a = 4'b1111; // why 45 ? because  full adder needs 25 ns and each full adder needs carry which needs 14ns  = 44ns 1ns (but it'd concurrent so 14 + 25 ==44 + 1 for safety )        #45 a = 4'b1011;
+        #45 b = 4'b1001;
+        #45 cin = 1'b1;
 
-
-
-//     end
-   
+    end
+    always #44 $display("Time %0d input = %b %b %b SUM= %b CARRY = %b\n",$time,a,b,cin,sum,cout); // 1 sec diff between  changing of Ta and Tb and Tcin and printing the value
+    always #185 $finish;
 
 
 
-// endmodule
+endmodule
 
 //===================== SYSTEM============================
 
@@ -251,12 +212,6 @@ module SYSTEM(d,cout,a,b,s,cin);
     // wire [2:0] c;
     wire [3:0] y;
     
-    // logic [3:0] tmpB0,tmpB1,tmpB2,tmpB3;
-    // tmpB0 = `{[0],~b[0],0,1}
-    // tmpB1 =`{[1],~b[1],0,1}
-    // tmpB2 =`{[2],~b[2],0,1}
-    // tmpB3 =`{[3],~b[3],0,1}
-
 
     MUX4X1 mux0(.b({b[0],~b[0],1'b0,1'b1}), .s(s), .f(y[0]));    
     MUX4X1 mux1(.b({b[1],~b[1],1'b0,1'b1}), .s(s), .f(y[1]));    
