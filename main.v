@@ -326,7 +326,7 @@ module CLA_ADDER(S , Cout , A , B , Cin); // SOURCE : https://www.geeksforgeeks.
     or  #7  c45(Cout , tmp7 , tmp8 , tmp9 , tmp10 , G[3]);
     
     /// Making Sums // SUM = Pi XOR Ci
-    
+
     xor #11 s0(S[0] , P[0] , Cin);
     xor #11 s1(S[1] , P[1] , C[1]);
     xor #11 s2(S[2] , P[2] , C[2]);
@@ -334,60 +334,62 @@ module CLA_ADDER(S , Cout , A , B , Cin); // SOURCE : https://www.geeksforgeeks.
     
 endmodule 
 
-module TST_CLA;
+// module TST_CLA; // SEEMS like 36 ns the delay
 
-    reg [3:0]A;
-    reg [3:0]B; 
-    reg Cin;
+//     reg [3:0]A;
+//     reg [3:0]B; 
+//     reg Cin;
     
-    wire Cout; 
-    wire [3:0]S; // sum
+//     wire Cout; 
+//     wire [3:0]S; // sum
     
-    CLA_ADDER DUMMY(.S(S), .Cout(Cout), .A(A), .B(B), .Cin(Cin));
+//     CLA_ADDER DUMMY(.S(S), .Cout(Cout), .A(A), .B(B), .Cin(Cin));
+
+//     initial begin
+//         $display("CLA TST BENCHMARK");
+
+//         A = 4'b0100;
+//         B = 4'b0100;
+//         Cin = 1'b1;     
+
+//     end
+    
+//     always @(S, Cout) 
+//     if ({Cout,S} == A + B  + Cin) 
+//         $display("time = %d",$time);
+
+
+//     always #500 $finish;
+
+// endmodule
+
+
+module Test;
+	reg [3:0] A, B;
+	reg CIN;
+	wire [4:0] S;
+	integer counter = 0, counter2 = 1, maxtime = 0;
+	integer ctime;
+	CLA_ADDER CLA(.S(S[3:0]), .Cout(S[4]), .A(A), .B(B), .Cin(Cin));
 
     initial begin
-        $display("CLA TST BENCHMARK");
-        
-        A = 4'b0000;
-        B = 4'b0000;
-        Cin = 1'b0;
-        
-        
-            
-        repeat(2**4  - 1) begin
-            B = B + 1;
-            #34 A = A + 1'b1;
-        end
-
-        // #34 A = 4'b1111;
-
-
-        // // #34 A = 4'b0001;
-        // #34 B = 4'b0001;
-        // // #34 A = 4'b0010;
-        // #34 B = 4'b1000;
-        // #34 A = 4'b1110;
-        // #34 B = 4'b0010;
-        // #34 Cin = 1'b1;
-        // #34 B = 4'b1111;
-        // #34 A = 4'b1000;
-
-
-    end
-    always #33 $display("Time %0d A = %b B = %b Cin = %b Cout = %b S = %b\n",$time,A,B,Cin,Cout,S); // 1 sec diff between  changing  and printing the value
-
-    always #500 $finish;
-
-
-
-
-
-
-
-
-
-
-
-
-
+		{A, B, CIN} = counter;
+		counter = counter + 1;
+		ctime = $time;
+		repeat(2**9 - 1)begin
+			#70
+			{A, B, CIN} = 11'bx;
+			#70
+			{A, B, CIN} = counter;
+			counter = counter + 1;
+			ctime = $time;
+		end
+		#100 $display("MAX TIME = %0d", maxtime);
+	end
+	always @ (S)
+		if (S == A + B + CIN && S != 0) begin
+			$display("Time %0d | A = %b | B = %b | CIN = %b | S = %b | %0d", ($time - ctime)/1000, A, B, CIN, S,counter2);
+			counter2 = counter2 + 1;
+			maxtime = ($time - ctime > maxtime)? $time-ctime : maxtime;
+			end
 endmodule
