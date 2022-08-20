@@ -54,8 +54,6 @@ module MUX4X1(f,s, b);
     input [1: 0] s;
     output  f;
 
-
-
     wire [0:3] w;
     wire ns1,ns0; // not s1, not s0
 
@@ -65,7 +63,6 @@ module MUX4X1(f,s, b);
     and #7 (w[0] , b[0], ns1 ,ns0) , (w[1] , b[1], s[0] ,ns1), (w[2] , b[2], s[1] ,ns0), (w[3] , b[3],s[1], s[0]); 
 
     or #7  (f, w[0], w[1], w[2], w[3]);
-
 
 
 endmodule
@@ -364,32 +361,141 @@ endmodule
 // endmodule
 
 
-module Test;
-	reg [3:0] A, B;
-	reg CIN;
-	wire [4:0] S;
-	integer counter = 0, counter2 = 1, maxtime = 0;
-	integer ctime;
-	CLA_ADDER CLA(.S(S[3:0]), .Cout(S[4]), .A(A), .B(B), .Cin(Cin));
+// module Test; // abu sh
+// 	reg [3:0] A, B;
+// 	reg CIN;
+// 	wire [4:0] S;
+// 	integer counter = 0, counter2 = 1, maxtime = 0;
+// 	integer ctime;
+// 	CLA_ADDER CLA(.S(S[3:0]), .Cout(S[4]), .A(A), .B(B), .Cin(Cin));
 
-    initial begin
-		{A, B, CIN} = counter;
-		counter = counter + 1;
-		ctime = $time;
-		repeat(2**9 - 1)begin
-			#70
-			{A, B, CIN} = 11'bx;
-			#70
-			{A, B, CIN} = counter;
-			counter = counter + 1;
-			ctime = $time;
-		end
-		#100 $display("MAX TIME = %0d", maxtime);
-	end
-	always @ (S)
-		if (S == A + B + CIN && S != 0) begin
-			$display("Time %0d | A = %b | B = %b | CIN = %b | S = %b | %0d", ($time - ctime)/1000, A, B, CIN, S,counter2);
-			counter2 = counter2 + 1;
-			maxtime = ($time - ctime > maxtime)? $time-ctime : maxtime;
-			end
+//     initial begin
+// 		{A, B, CIN} = counter;
+// 		counter = counter + 1;
+// 		ctime = $time;
+// 		repeat(2**9 - 1)begin
+// 			#70
+// 			{A, B, CIN} = 11'bx;
+// 			#70
+// 			{A, B, CIN} = counter;
+// 			counter = counter + 1;
+// 			ctime = $time;
+// 		end
+// 		#100 $display("MAX TIME = %0d", maxtime);
+	
+//     end
+	
+
+//     always @ (S)
+        
+//         if (S == A + B + CIN && S != 0) begin
+			
+//             $display("Time %0d | A = %b | B = %b | CIN = %b | S = %b | %0d", ($time - ctime)/1000, A, B, CIN, S,counter2);
+// 			counter2 = counter2 + 1;
+// 			maxtime = ($time - ctime > maxtime)? $time-ctime : maxtime;
+		
+//         end
+    
+// endmodule
+
+
+// full test bench with generator and analyzer
+
+
+module TEST_GENERATOR (d,cout,a,b,s,cin,clk);
+
+
+    input cin;
+    input [3:0] a,b;
+    input [1:0] s;
+    input clk; // HERE ?? 
+
+    output reg [3:0] d; // extra bit for carry 
+    output reg cout;
+    
+
+    // initial begin
+
+    //     // $display("FULL TST BENCHMARK");
+    //     cin = 1'b0;
+    //     a = 4'b0000;
+    //     b = 4'b0000;
+    
+    // end
+    // initial begin
+    //     {cin, a, b,s} = 11'b00000000000;
+
+    // end
+
+    always @(posedge clk) begin
+        
+        {cin, a, b,s} = {cin, a, b,s} + 11'b00000000001;
+
+        // if ({s,cin} == 3'b000 ) begin
+        // end
+
+        case({s,cin})
+
+            4'b0000 : begin d = a + b; cout = d[4];end 
+            4'b0001 : begin d = a + b + 1;cout = d[4];end
+            4'b0010 : begin d = a + ~b; cout = d[4];end
+            4'b0011 : begin d = a + ~b + 1 ;cout = d[4];end
+            4'b0100 : begin d = a;cout = d[4];end
+            4'b0101 : begin d = a +1;cout = d[4];end
+            4'b0110 : begin d = a - 1 ;cout = d[4];end
+            4'b0111 : begin d = a;cout = d[4];end
+            
+        endcase
+
+    end
+
+endmodule
+
+
+module ANALYZER(exact_sum, prob_sum, clk  );
+
+    input clk;
+    input [4:0] exact_sum;
+    input [4:0] prob_sum; // extra bit for carry
+
+    always @( negedge clk) begin // generator is on positive edge, analyzer must be on negative edge
+
+        if( exact_sum != prob_sum ) begin
+            $display("ERROR");
+        end
+        else begin
+            $display("OK");
+        end
+
+
+    end
+
+
+
+
+
+
+
+endmodule
+
+module FULL_TEST_R;
+
+    reg cin;
+    reg [3:0] a,b;
+    reg [1:0] s;
+    reg clk;
+
+    wire [3:0] d; // prob sum
+    wire cout1;
+
+    wire [3:0] exact_sum;   //  
+    wire cout2;
+
+    TEST_GENERATOR TG(.cin(cin), .a(a), .b(b), .s(s), .d(exact_sum), .cout(cout2),.clk(clk));
+    SYSTEM DUMMY(.d(d), .cout(cout1), .a(a), .b(b), .s(s), .cin(cin));
+    ANALYZER ANLZ(.exact_sum({cout2,exact_sum}),.prob_sum({cout1,d}) ,.clk(clk));
+
+
+
+
 endmodule
