@@ -405,9 +405,10 @@ endmodule
 module TEST_GENERATOR (d,cout,a,b,s,cin,clk);
 
 
-    input cin;
-    input [3:0] a,b;
-    input [1:0] s;
+    output reg cin;
+    output reg [3:0] a,b;
+    output reg [1:0] s;
+
     input clk; // HERE ?? 
 
     output reg [3:0] d; // extra bit for carry 
@@ -480,10 +481,13 @@ endmodule
 
 module FULL_TEST_R;
 
-    reg cin;
-    reg [3:0] a,b;
-    reg [1:0] s;
+    wire cin;
+    wire [3:0] a,b;
+    wire [1:0] s;
+    
     reg clk;
+    
+    // ==================  =================
 
     wire [3:0] d; // prob sum
     wire cout1;
@@ -492,6 +496,7 @@ module FULL_TEST_R;
     wire cout2;
 
     TEST_GENERATOR TG(.cin(cin), .a(a), .b(b), .s(s), .d(exact_sum), .cout(cout2),.clk(clk));
+
     SYSTEM DUMMY(.d(d), .cout(cout1), .a(a), .b(b), .s(s), .cin(cin));
     ANALYZER ANLZ(.exact_sum({cout2,exact_sum}),.prob_sum({cout1,d}) ,.clk(clk));
 
