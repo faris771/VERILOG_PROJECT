@@ -179,12 +179,12 @@ module TST_IV_BIT_ADDER; // CHECK FOR BETTER DELAY
 
     IV_BIT_ADDER DUMMY(.sum(sum), .cout(cout), .a(a), .b(b), .cin(cin));
   
-  	initial begin 
-      $dumpfile("dump.vcd");
-      $dumpvars(1);
+  	// initial begin 
+    //   $dumpfile("dump.vcd"); //FOR ONLINE SIMULATION STUFF
+    //   $dumpvars(1);
       
       
-    end
+    // end
 
     initial begin
         
@@ -232,7 +232,7 @@ endmodule
 
 // ===================== Carry look ahead adder ============================
 
-module CLA_ADDER(S , Cout , A , B , Cin); // SOURCE : https://www.geeksforgeeks.org/carry-look-ahead-adder/
+module CLA_ADDER(S , Cout , A , B , Cin); // SOURCE OF EQUATIONS : https://www.geeksforgeeks.org/carry-look-ahead-adder/
 
     input [3:0]A;
     input [3:0]B; 
@@ -340,7 +340,7 @@ reg [3:0]A;
 endmodule
 
 
-module TEST_GENERATOR (d,cout,a,b,s,cin,clk);
+module TEST_GENERATOR (d,cout,a,b,s,cin,clk);// every possible combination of inputs
 
     output reg cin;
     output reg [3:0] a,b;
@@ -360,7 +360,7 @@ module TEST_GENERATOR (d,cout,a,b,s,cin,clk);
 
     always @(posedge clk) begin
         
-        if( counter == 2049) // 2048 +  1 extra bit for last case 
+        if( counter == 2049) // 2048 +  1 extra bit for last case  2    2^11
             $finish;
         {cin, a, b,s} = counter;
         counter = counter + 1;
@@ -386,7 +386,7 @@ module TEST_GENERATOR (d,cout,a,b,s,cin,clk);
 endmodule
 
 
-module ANALYZER(exact_sum, prob_sum, clk  );
+module ANALYZER(exact_sum, prob_sum, clk  ); // for direct comparison
 
     input clk;
     input [4:0] exact_sum;
@@ -409,7 +409,7 @@ module ANALYZER(exact_sum, prob_sum, clk  );
 
 endmodule
 
-module FULL_TEST_R;
+module FULL_TEST_R;// for ripple adder 
 
 
     wire cin;
@@ -425,7 +425,7 @@ module FULL_TEST_R;
 
     // ==================  =================
 
-    wire [3:0] d; // prob sum
+    wire [3:0] d; // prob sum, sum that will be tested
     wire cout1;
 
     wire [3:0] exact_sum;   //  
@@ -444,7 +444,7 @@ endmodule
 
 
 
-module SYSTEM_CLA(d,cout,a,b,s,cin);
+module SYSTEM_CLA(d,cout,a,b,s,cin); // building the whole system
 
     input cin;
     input [3:0] a,b;
