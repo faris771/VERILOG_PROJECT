@@ -67,38 +67,38 @@ module MUX4X1(f,s, b);
 
 endmodule
 
-// module TSTMUX4;
+module TSTMUX4;
 
-//     reg [0:3] b;
-//     reg [1: 0] s;
-//     wire f;
-//     MUX4X1 tst (.b(b), .s(s), .f(f)) ; // order doesn't matter
+    reg [0:3] b;
+    reg [1: 0] s;
+    wire f;
+    MUX4X1 tst (.b(b), .s(s), .f(f)) ; // order doesn't matter
     
 
-//     initial begin
+    initial begin
 
-//         $display(" MUX TEST BENCH");
+        $display(" MUX TEST BENCH");
 
-//         // $monitor("Time %0d select= %b input = %b OUT= %b\n",$time,s,b,f);
-//         {s} = 2'b00;
-//         b = 4'b1010;
+        // $monitor("Time %0d select= %b input = %b OUT= %b\n",$time,s,b,f);
+        {s} = 2'b00;
+        b = 4'b1010;
 
-//         repeat(4) begin
+        repeat(4) begin
 
-//             #21 {s} = {s} + 2'b01; // 1 ns diff between each iteration priting the value  
+            #21 {s} = {s} + 2'b01; // 1 ns diff between each iteration priting the value  
 
-//         end
+        end
       
 
-//     end
+    end
 
-//     always #20 $display("Time %0d select= %b input = %b OUT= %b\n",$time,s,b,f); // 20 > 17(mux toal delation )
-//     always #85 $finish; // 4 cases each case 20 ns  = 80 ns, 85 ns > 80 ns
-
-
+    always #20 $display("Time %0d select= %b input = %b OUT= %b\n",$time,s,b,f); // 20 > 17(mux toal delation )
+    always #85 $finish; // 4 cases each case 20 ns  = 80 ns, 85 ns > 80 ns
 
 
-// endmodule
+
+
+endmodule
 
 
 //===================== FULL ADDER ============================
@@ -123,32 +123,32 @@ endmodule
 
 
 
-// module FA_TEST;
+module FA_TEST;
 
-//     reg Tcin,Ta,Tb;
-//     wire Tsum,Tcout;
+    reg Tcin,Ta,Tb;
+    wire Tsum,Tcout;
 
-//     FULLADDER DUMMY(.sum(Tsum), .cout(Tcout), .a(Ta), .b(Tb), .cin(Tcin));
+    FULLADDER DUMMY(.sum(Tsum), .cout(Tcout), .a(Ta), .b(Tb), .cin(Tcin));
 
-//     initial  begin
-//         $display("FULL ADDER TST BENCHMARK");
+    initial  begin
+        $display("FULL ADDER TST BENCHMARK");
         // total time must be > 25 ns
-//         {Tcin,Ta,Tb} = 3'b000;
+        {Tcin,Ta,Tb} = 3'b000;
 
 
-//         repeat(7) begin
-//             #26 {Tcin,Ta,Tb} = {Tcin,Ta,Tb} +  3'b001;
-//         end  
+        repeat(7) begin
+            #26 {Tcin,Ta,Tb} = {Tcin,Ta,Tb} +  3'b001;
+        end  
           
         
-//     end
-//     always #25 $display("Time %0d input = %b %b %b SUM= %b CARRY = %b\n",$time,Ta,Tb,Tcin,Tsum,Tcout); // 1 sec diff between  changing of Ta and Tb and Tcin and printing the value 
-//     always #500 $finish;
+    end
+    always #25 $display("Time %0d input = %b %b %b SUM= %b CARRY = %b\n",$time,Ta,Tb,Tcin,Tsum,Tcout); // 1 sec diff between  changing of Ta and Tb and Tcin and printing the value 
+    always #500 $finish;
 
 
 
 
-// endmodule
+endmodule
 
 
 //===================== 4 bit  ADDER ============================
@@ -170,41 +170,41 @@ module IV_BIT_ADDER(sum,cout,a,b,cin);
 endmodule
 
 
-// module TST_IV_BIT_ADDER; // CHECK FOR BETTER DELAY 
+module TST_IV_BIT_ADDER; // CHECK FOR BETTER DELAY 
 
-//     reg cin;
-//     reg [3:0] a,b;
-//     wire [3:0] sum;
-//     wire cout;
+    reg cin;
+    reg [3:0] a,b;
+    wire [3:0] sum;
+    wire cout;
 
-//     IV_BIT_ADDER DUMMY(.sum(sum), .cout(cout), .a(a), .b(b), .cin(cin));
+    IV_BIT_ADDER DUMMY(.sum(sum), .cout(cout), .a(a), .b(b), .cin(cin));
   
-//   	initial begin 
-//       $dumpfile("dump.vcd");
-//       $dumpvars(1);
+  	initial begin 
+      $dumpfile("dump.vcd");
+      $dumpvars(1);
       
       
-//     end
+    end
 
-//     initial begin
+    initial begin
         
-//         $display("4 BIT ADDER TST BENCHMARK2");
+        $display("4 BIT ADDER TST BENCHMARK2");
 
-//         a = 4'b0000;
-//         b = 4'b0000;
-//         cin = 1'b0;
+        a = 4'b0000;
+        b = 4'b0000;
+        cin = 1'b0;
 
-//         #70 a = 4'b1111; 
-//         #70 b = 4'b1001;
-//         #70 cin = 1'b1;
+        #70 a = 4'b1111; 
+        #70 b = 4'b1001;
+        #70 cin = 1'b1;
 
-//     end
-//     always #69 $display("Time %0d input = %b %b %b SUM= %b CARRY = %b\n",$time,a,b,cin,sum,cout); // 1 sec diff between  changing of Ta and Tb and Tcin and printing the value
-//     always #300 $finish;
+    end
+    always #69 $display("Time %0d input = %b %b %b SUM= %b CARRY = %b\n",$time,a,b,cin,sum,cout); // 1 sec diff between  changing of Ta and Tb and Tcin and printing the value
+    always #300 $finish;
 
 
 
-// endmodule
+endmodule
 //===================== SYSTEM============================
 
 module SYSTEM(d,cout,a,b,s,cin);
@@ -228,41 +228,6 @@ module SYSTEM(d,cout,a,b,s,cin);
 
 endmodule
 
-// module TST_SYSTEM;
-    
-//     reg cin;
-//     reg [3:0] a,b;
-//     reg [1:0] s;
-//     wire [3:0] d;
-//     wire cout;
-
-//     SYSTEM DUMMY(.d(d), .cout(cout), .a(a), .b(b), .s(s), .cin(cin));
-
-
-//     initial begin
-//         // mux = 20 ns , 4bit adder : 45 =  65 + 5 for safety
-
-//         $display("SYSTEM TST BENCHMARK");
-//         {s,cin} = 3'b000;
-//         a = 4'b0000;
-//         b = 4'b1111;
-//         $display("a : %b | b : %b ",a,b);
-//         repeat(8) begin
-            
-//             #70 {s,cin} = {s,cin} +  3'b001;
-
-
-//         end
-        
-
-//     end
-//     always #69 $display("Time %0d select = %b%b OUT= %b CARRY = %b\n",$time,s,cin,d,cout); // 1 sec diff between  changing of Ta and Tb and Tcin and printing the value   
-//     always #565 $finish; // 70 * 8 + 5 for safety
-
-
-
-
-// endmodule
 
 
 // ===================== Carry look ahead adder ============================
@@ -283,6 +248,9 @@ module CLA_ADDER(S , Cout , A , B , Cin); // SOURCE : https://www.geeksforgeeks.
 
     ///  Gi 
     and #7 g0(G[0] , A[0] , B[0]);
+
+
+    
     and #7 g1(G[1] , A[1] , B[1]);
     and #7 g2(G[2] , A[2] , B[2]);
     and #7 g3(G[3] , A[3] , B[3]);
@@ -336,80 +304,40 @@ module CLA_ADDER(S , Cout , A , B , Cin); // SOURCE : https://www.geeksforgeeks.
     
 endmodule 
 
-// module TST_CLA; // SEEMS like 45 ns is the suitable delay
-// reg [3:0]A;
-//     reg [3:0]B; 
-//     reg Cin;
+module TST_CLA; // SEEMS like 45 ns is the suitable delay
+reg [3:0]A;
+    reg [3:0]B; 
+    reg Cin;
     
-//     wire Cout; 
-//     wire [3:0]S; // sum
+    wire Cout; 
+    wire [3:0]S; // sum
     
-//     CLA_ADDER DUMMY(.S(S), .Cout(Cout), .A(A), .B(B), .Cin(Cin));
+    CLA_ADDER DUMMY(.S(S), .Cout(Cout), .A(A), .B(B), .Cin(Cin));
 
-//     initial begin
-//         $display("CLA TST BENCHMARK");
-// 		A = 4'b0000;
-//       	B = 4'b0000;
-//       	Cin = 1'b0;
+    initial begin
+        $display("CLA TST BENCHMARK");
+		A = 4'b0000;
+      	B = 4'b0000;
+      	Cin = 1'b0;
       
       
-//       // #34 A = 4'b0001;
-//         #45 B = 4'b0001;
-//         // #34 A = 4'b0010;
-//         #45 B = 4'b1000;
-//         #45 A = 4'b1110;
-//         #45 B = 4'b0010;
-//         #45 Cin = 1'b1;
-//         #45 B = 4'b1111;
-//         #45 A = 4'b1000;
-//     end
+      // #34 A = 4'b0001;
+        #45 B = 4'b0001;
+        // #34 A = 4'b0010;
+        #45 B = 4'b1000;
+        #45 A = 4'b1110;
+        #45 B = 4'b0010;
+        #45 Cin = 1'b1;
+        #45 B = 4'b1111;
+        #45 A = 4'b1000;
+    end
     
-//     always #44 $display("Time %0d A = %b B = %b Cin = %b Cout = %b S = %b\n",$time,A,B,Cin,Cout,S); // 1 sec diff between  changing  and printing the value
+    always #44 $display("Time %0d A = %b B = %b Cin = %b Cout = %b S = %b\n",$time,A,B,Cin,Cout,S); // 1 sec diff between  changing  and printing the value
 
 
-//     always #500 $finish;
+    always #500 $finish;
 
-// endmodule
-
-
-
-// module Test; // abu sh
-// 	reg [3:0] A, B;
-// 	reg CIN;
-// 	wire [4:0] S;
-// 	integer counter = 0, counter2 = 1, maxtime = 0;
-// 	integer ctime;
-// 	CLA_ADDER CLA(.S(S[3:0]), .Cout(S[4]), .A(A), .B(B), .Cin(Cin));
-
-//     initial begin
-// 		{A, B, CIN} = counter;
-// 		counter = counter + 1;
-// 		ctime = $time;
-// 		repeat(2**9 - 1)begin
-// 			#70
-// 			{A, B, CIN} = 11'bx;
-// 			#70
-// 			{A, B, CIN} = counter;
-// 			counter = counter + 1;
-// 			ctime = $time;
-// 		end
-// 		#100 $display("MAX TIME = %0d", maxtime);
-	
-//     end
-	
-
-//     always @ (S)
-        
-//         if (S == A + B + CIN && S != 0) begin
-			
-//             $display("Time %0d | A = %b | B = %b | CIN = %b | S = %b | %0d", ($time - ctime)/1000, A, B, CIN, S,counter2);
-// 			counter2 = counter2 + 1;
-// 			maxtime = ($time - ctime > maxtime)? $time-ctime : maxtime;
-		
-//         end
-    
-// endmodule
-// full test bench with generator and analyzer
+endmodule
 
 
 module TEST_GENERATOR (d,cout,a,b,s,cin,clk);
@@ -479,11 +407,6 @@ module ANALYZER(exact_sum, prob_sum, clk  );
     end
 
 
-
-
-
-
-
 endmodule
 
 module FULL_TEST_R;
@@ -543,36 +466,36 @@ module SYSTEM_CLA(d,cout,a,b,s,cin);
 endmodule
 
 
-// module FULL_TEST_CLA;
+module FULL_TEST_CLA;
 
 
-//     wire cin;
-//     wire [3:0] a,b;
-//     wire [1:0] s;
+    wire cin;
+    wire [3:0] a,b;
+    wire [1:0] s;
     
-//     reg clk;
+    reg clk;
 
 
-//     initial begin
-//        clk = 1; 
-//     end
+    initial begin
+       clk = 1; 
+    end
 
-//     // ==================  =================
+    // ==================  =================
 
-//     wire [3:0] d; // prob sum
-//     wire cout1;
+    wire [3:0] d; // prob sum
+    wire cout1;
 
-//     wire [3:0] exact_sum;   //  
-//     wire cout2;
+    wire [3:0] exact_sum;   //  
+    wire cout2;
 
-//     TEST_GENERATOR TG(.cin(cin), .a(a), .b(b), .s(s), .d(exact_sum), .cout(cout2),.clk(clk));
+    TEST_GENERATOR TG(.cin(cin), .a(a), .b(b), .s(s), .d(exact_sum), .cout(cout2),.clk(clk));
 
-//     SYSTEM_CLA DUMMY(.d(d), .cout(cout1), .a(a), .b(b), .s(s), .cin(cin));
-//     ANALYZER ANLZ(.exact_sum({cout2,exact_sum}),.prob_sum({cout1,d}) ,.clk(clk));
+    SYSTEM_CLA DUMMY(.d(d), .cout(cout1), .a(a), .b(b), .s(s), .cin(cin));
+    ANALYZER ANLZ(.exact_sum({cout2,exact_sum}),.prob_sum({cout1,d}) ,.clk(clk));
 
-//     always #55 clk = ~clk; //55 GOOD
+    always #55 clk = ~clk; //55 GOOD
 
 
 
-// endmodule
+endmodule
 

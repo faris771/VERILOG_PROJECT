@@ -1,0 +1,156 @@
+$date
+	Mon Aug 22 19:05:35 2022
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ns
+$end
+$scope module FA_TEST $end
+$var wire 1 ! Tsum $end
+$var wire 1 " Tcout $end
+$var reg 1 # Ta $end
+$var reg 1 $ Tb $end
+$var reg 1 % Tcin $end
+$upscope $end
+$scope module FULL_TEST_CLA $end
+$var wire 2 & s [1:0] $end
+$var wire 4 ' exact_sum [3:0] $end
+$var wire 4 ( d [3:0] $end
+$var wire 1 ) cout2 $end
+$var wire 1 * cout1 $end
+$var wire 1 + cin $end
+$var wire 4 , b [3:0] $end
+$var wire 4 - a [3:0] $end
+$var reg 1 . clk $end
+$upscope $end
+$scope module FULL_TEST_R $end
+$var wire 2 / s [1:0] $end
+$var wire 4 0 exact_sum [3:0] $end
+$var wire 4 1 d [3:0] $end
+$var wire 1 2 cout2 $end
+$var wire 1 3 cout1 $end
+$var wire 1 4 cin $end
+$var wire 4 5 b [3:0] $end
+$var wire 4 6 a [3:0] $end
+$var reg 1 7 clk $end
+$upscope $end
+$scope module TSTMUX4 $end
+$var wire 1 8 f $end
+$var reg 4 9 b [0:3] $end
+$var reg 2 : s [1:0] $end
+$upscope $end
+$scope module TST_CLA $end
+$var wire 4 ; S [3:0] $end
+$var wire 1 < Cout $end
+$var reg 4 = A [3:0] $end
+$var reg 4 > B [3:0] $end
+$var reg 1 ? Cin $end
+$upscope $end
+$scope module TST_IV_BIT_ADDER $end
+$var wire 4 @ sum [3:0] $end
+$var wire 1 A cout $end
+$var reg 4 B a [3:0] $end
+$var reg 4 C b [3:0] $end
+$var reg 1 D cin $end
+$upscope $end
+$enddefinitions $end
+#0
+$dumpvars
+0D
+b0 C
+b0 B
+xA
+bx @
+0?
+b0 >
+b0 =
+x<
+bx ;
+b0 :
+b1010 9
+x8
+17
+b0 6
+b0 5
+04
+x3
+x2
+bx 1
+b0 0
+b0 /
+1.
+b0 -
+b0 ,
+0+
+x*
+x)
+bx (
+b0 '
+b0 &
+0%
+0$
+0#
+x"
+x!
+$end
+#11
+bx0 @
+0!
+#14
+0A
+0"
+#17
+18
+#21
+0*
+0<
+b1 :
+#22
+bx0 ;
+#25
+bx00 ;
+bx00 1
+b0 @
+#26
+1$
+#28
+03
+#32
+b0 ;
+#36
+b0 (
+#37
+1!
+#38
+08
+#39
+b0 1
+#42
+b10 :
+#45
+b1 >
+#52
+1#
+0$
+#55
+0.
+#59
+18
+#63
+b11 :
+#67
+b1 ;
+#70
+b1111 B
+07
+#78
+1$
+#80
+08
+#81
+b1111 @
+#84
+b0 :
+#85
