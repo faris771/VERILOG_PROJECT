@@ -265,7 +265,7 @@ endmodule
 // endmodule
 
 
-// ===================== look ahead adder ============================
+// ===================== Carry look ahead adder ============================
 
 module CLA_ADDER(S , Cout , A , B , Cin); // SOURCE : https://www.geeksforgeeks.org/carry-look-ahead-adder/
 
@@ -281,19 +281,19 @@ module CLA_ADDER(S , Cout , A , B , Cin); // SOURCE : https://www.geeksforgeeks.
     wire [0:3]P; // Pi = Ai xor Bi
     wire [0:3]G; // Gi  = Ai and Bi 
 
-    /// Making Pi
-    xor #11 p0(P[0] , A[0] , B[0]);
-    xor #11 p1(P[1] , A[1] , B[1]);
-    xor #11 p2(P[2] , A[2] , B[2]);
-    xor #11 p3(P[3] , A[3] , B[3]);
-    
-    /// Making Gi 
+    ///  Gi 
     and #7 g0(G[0] , A[0] , B[0]);
     and #7 g1(G[1] , A[1] , B[1]);
     and #7 g2(G[2] , A[2] , B[2]);
     and #7 g3(G[3] , A[3] , B[3]);
     
-    /// Making C1
+    ///  Pi
+    xor #11 p0(P[0] , A[0] , B[0]);
+    xor #11 p1(P[1] , A[1] , B[1]);
+    xor #11 p2(P[2] , A[2] , B[2]);
+    xor #11 p3(P[3] , A[3] , B[3]);
+    
+    ///  C1
     wire tmp1;
     and #7 c11(tmp1 , P[0] , Cin); 
     or  #7 c12(C[1] , G[0] , tmp1); // C[1] = G[0] + P[0]& cin
@@ -336,9 +336,8 @@ module CLA_ADDER(S , Cout , A , B , Cin); // SOURCE : https://www.geeksforgeeks.
     
 endmodule 
 
-// module TST_CLA; // SEEMS like 36 ns the delay
-
-//     reg [3:0]A;
+// module TST_CLA; // SEEMS like 45 ns is the suitable delay
+// reg [3:0]A;
 //     reg [3:0]B; 
 //     reg Cin;
     
@@ -349,21 +348,29 @@ endmodule
 
 //     initial begin
 //         $display("CLA TST BENCHMARK");
-
-//         A = 4'b0100;
-//         B = 4'b0100;
-//         Cin = 1'b1;     
-
+// 		A = 4'b0000;
+//       	B = 4'b0000;
+//       	Cin = 1'b0;
+      
+      
+//       // #34 A = 4'b0001;
+//         #45 B = 4'b0001;
+//         // #34 A = 4'b0010;
+//         #45 B = 4'b1000;
+//         #45 A = 4'b1110;
+//         #45 B = 4'b0010;
+//         #45 Cin = 1'b1;
+//         #45 B = 4'b1111;
+//         #45 A = 4'b1000;
 //     end
     
-//     always @(S, Cout) 
-//     if ({Cout,S} == A + B  + Cin) 
-//         $display("time = %d",$time);
+//     always #44 $display("Time %0d A = %b B = %b Cin = %b Cout = %b S = %b\n",$time,A,B,Cin,Cout,S); // 1 sec diff between  changing  and printing the value
 
 
 //     always #500 $finish;
 
 // endmodule
+
 
 
 // module Test; // abu sh
@@ -402,14 +409,10 @@ endmodule
 //         end
     
 // endmodule
-
-
 // full test bench with generator and analyzer
 
 
 module TEST_GENERATOR (d,cout,a,b,s,cin,clk);
-
-    
 
     output reg cin;
     output reg [3:0] a,b;
@@ -421,14 +424,6 @@ module TEST_GENERATOR (d,cout,a,b,s,cin,clk);
     output reg cout;
     
 
-    // initial begin
-
-    //     // $display("FULL TST BENCHMARK");
-    //     cin = 1'b0;
-    //     a = 4'b0000;
-    //     b = 4'b0000;
-    
-    // end
 
     initial begin
         counter = 0;
@@ -472,7 +467,9 @@ module ANALYZER(exact_sum, prob_sum, clk  );
     always @( negedge clk) begin // generator is on positive edge, analyzer must be on negative edge
 
         if( exact_sum != prob_sum ) begin
+            // $display("\033[1m"); bold
             $display("ERROR");
+            // $display("\033[0m");
         end
         else begin
             $display("OK");
@@ -516,8 +513,66 @@ module FULL_TEST_R;
     SYSTEM DUMMY(.d(d), .cout(cout1), .a(a), .b(b), .s(s), .cin(cin));
     ANALYZER ANLZ(.exact_sum({cout2,exact_sum}),.prob_sum({cout1,d}) ,.clk(clk));
 
-    always #100 clk = ~clk;
+    always #70 clk = ~clk; // By trial : 70 ns is a suitable latency for the system to finish correctly
 
 
 
 endmodule
+
+
+
+module SYSTEM_CLA(d,cout,a,b,s,cin);
+
+    input cin;
+    input [3:0] a,b;
+    input [1:0] s;
+    output [3:0] d;
+    output cout;
+    // wire [2:0] c;
+    wire [3:0] y;
+    
+
+    MUX4X1 mux0(.b({b[0],~b[0],1'b0,1'b1}), .s(s), .f(y[0]));    
+    MUX4X1 mux1(.b({b[1],~b[1],1'b0,1'b1}), .s(s), .f(y[1]));    
+    MUX4X1 mux2(.b({b[2],~b[2],1'b0,1'b1}), .s(s), .f(y[2]));    
+    MUX4X1 mux3(.b({b[3],~b[3],1'b0,1'b1}), .s(s), .f(y[3]));    
+    
+    CLA_ADDER ADDER4(.S(d), .Cout(cout), .A(a), .B(y), .Cin(cin));
+
+
+endmodule
+
+
+// module FULL_TEST_CLA;
+
+
+//     wire cin;
+//     wire [3:0] a,b;
+//     wire [1:0] s;
+    
+//     reg clk;
+
+
+//     initial begin
+//        clk = 1; 
+//     end
+
+//     // ==================  =================
+
+//     wire [3:0] d; // prob sum
+//     wire cout1;
+
+//     wire [3:0] exact_sum;   //  
+//     wire cout2;
+
+//     TEST_GENERATOR TG(.cin(cin), .a(a), .b(b), .s(s), .d(exact_sum), .cout(cout2),.clk(clk));
+
+//     SYSTEM_CLA DUMMY(.d(d), .cout(cout1), .a(a), .b(b), .s(s), .cin(cin));
+//     ANALYZER ANLZ(.exact_sum({cout2,exact_sum}),.prob_sum({cout1,d}) ,.clk(clk));
+
+//     always #55 clk = ~clk; //55 GOOD
+
+
+
+// endmodule
+
