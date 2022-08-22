@@ -170,7 +170,7 @@ module IV_BIT_ADDER(sum,cout,a,b,cin);
 endmodule
 
 
-// module TST_IV_BIT_ADDER;
+// module TST_IV_BIT_ADDER; // CHECK FOR BETTER DELAY 
 
 //     reg cin;
 //     reg [3:0] a,b;
@@ -178,6 +178,13 @@ endmodule
 //     wire cout;
 
 //     IV_BIT_ADDER DUMMY(.sum(sum), .cout(cout), .a(a), .b(b), .cin(cin));
+  
+//   	initial begin 
+//       $dumpfile("dump.vcd");
+//       $dumpvars(1);
+      
+      
+//     end
 
 //     initial begin
         
@@ -187,18 +194,17 @@ endmodule
 //         b = 4'b0000;
 //         cin = 1'b0;
 
-//         #45 a = 4'b1111; // why 45 ? because  full adder needs 25 ns and each full adder needs carry which needs 14ns  = 44ns 1ns (but it'd concurrent so 14 + 25 ==44 + 1 for safety )        #45 a = 4'b1011;
-//         #45 b = 4'b1001;
-//         #45 cin = 1'b1;
+//         #70 a = 4'b1111; 
+//         #70 b = 4'b1001;
+//         #70 cin = 1'b1;
 
 //     end
-//     always #44 $display("Time %0d input = %b %b %b SUM= %b CARRY = %b\n",$time,a,b,cin,sum,cout); // 1 sec diff between  changing of Ta and Tb and Tcin and printing the value
-//     always #185 $finish;
+//     always #69 $display("Time %0d input = %b %b %b SUM= %b CARRY = %b\n",$time,a,b,cin,sum,cout); // 1 sec diff between  changing of Ta and Tb and Tcin and printing the value
+//     always #300 $finish;
 
 
 
 // endmodule
-
 //===================== SYSTEM============================
 
 module SYSTEM(d,cout,a,b,s,cin);
@@ -275,7 +281,6 @@ module CLA_ADDER(S , Cout , A , B , Cin); // SOURCE : https://www.geeksforgeeks.
     wire [0:3]P; // Pi = Ai xor Bi
     wire [0:3]G; // Gi  = Ai and Bi 
 
-    
     /// Making Pi
     xor #11 p0(P[0] , A[0] , B[0]);
     xor #11 p1(P[1] , A[1] , B[1]);
@@ -293,14 +298,14 @@ module CLA_ADDER(S , Cout , A , B , Cin); // SOURCE : https://www.geeksforgeeks.
     and #7 c11(tmp1 , P[0] , Cin); 
     or  #7 c12(C[1] , G[0] , tmp1); // C[1] = G[0] + P[0]& cin
     
-    /// Making C2
+    ///  C2
     wire tmp2; // tmp2 = P[1]& cin
     wire tmp3;// tmp3 = P[1]& cin & G[1]
     and #7 c21(tmp2 , P[1] , G[0]);
     and #7 c22(tmp3 , P[1] , P[0] , Cin);
     or  #7 c23(C[2] , tmp2 , tmp3 , G[1]);
     
-    /// Making C3
+    ///  C3
     wire tmp4; // tmp4 = P[2]& G[1]
     wire tmp5;// tmp5 = P[2]& P[1] & G[0]
     wire tmp6; // tmp6 = P[2]& P[1] & P[0] & cin
@@ -310,7 +315,7 @@ module CLA_ADDER(S , Cout , A , B , Cin); // SOURCE : https://www.geeksforgeeks.
     and #7  c33(tmp6 , P[2] , P[1] , P[0] , Cin);
     or  #7  c34(C[3] , tmp4 , tmp5 , tmp6 , G[2]);
     
-    /// Making Cout (C4) 
+    ///  Cout (C4) 
     wire tmp7;
     wire tmp8;
     wire tmp9;
@@ -322,7 +327,7 @@ module CLA_ADDER(S , Cout , A , B , Cin); // SOURCE : https://www.geeksforgeeks.
     and #7  c44(tmp10 , P[3] , P[2] , P[1] , P[0] , Cin);
     or  #7  c45(Cout , tmp7 , tmp8 , tmp9 , tmp10 , G[3]);
     
-    /// Making Sums // SUM = Pi XOR Ci
+    ///  Sums // SUM = Pi XOR Ci
 
     xor #11 s0(S[0] , P[0] , Cin);
     xor #11 s1(S[1] , P[1] , C[1]);
@@ -404,13 +409,14 @@ endmodule
 
 module TEST_GENERATOR (d,cout,a,b,s,cin,clk);
 
+    
 
     output reg cin;
     output reg [3:0] a,b;
     output reg [1:0] s;
 
     input clk; // HERE ?? 
-
+    integer counter;
     output reg [3:0] d; // extra bit for carry 
     output reg cout;
     
@@ -423,14 +429,18 @@ module TEST_GENERATOR (d,cout,a,b,s,cin,clk);
     //     b = 4'b0000;
     
     // end
-    // initial begin
-    //     {cin, a, b,s} = 11'b00000000000;
 
-    // end
+    initial begin
+        counter = 0;
+
+    end
 
     always @(posedge clk) begin
         
-        {cin, a, b,s} = {cin, a, b,s} + 11'b00000000001;
+        if( counter == 2049) // 2048 +  1 extra bit for last case 
+            $finish;
+        {cin, a, b,s} = counter;
+        counter = counter + 1;
 
         // if ({s,cin} == 3'b000 ) begin
         // end
@@ -481,12 +491,18 @@ endmodule
 
 module FULL_TEST_R;
 
+
     wire cin;
     wire [3:0] a,b;
     wire [1:0] s;
     
     reg clk;
-    
+
+
+    initial begin
+       clk = 1; 
+    end
+
     // ==================  =================
 
     wire [3:0] d; // prob sum
@@ -500,6 +516,7 @@ module FULL_TEST_R;
     SYSTEM DUMMY(.d(d), .cout(cout1), .a(a), .b(b), .s(s), .cin(cin));
     ANALYZER ANLZ(.exact_sum({cout2,exact_sum}),.prob_sum({cout1,d}) ,.clk(clk));
 
+    always #100 clk = ~clk;
 
 
 
